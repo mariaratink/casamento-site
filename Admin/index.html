@@ -1,9 +1,46 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Painel — Em construção</title></head>
-  <body>
-    <h1>Painel (admin) — ainda precisa de login</h1>
-    <div id="app"></div>
-    <script src="app.js"></script>
-  </body>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel — Organizador</title>
+  <style>
+    body{font-family:Inter,Arial;margin:30px;background:#f7f5f9}
+    .box{max-width:1100px;margin:auto;background:white;padding:20px;border-radius:12px;box-shadow:0 8px 30px rgba(10,8,20,0.06)}
+    input,button{padding:8px;border-radius:8px;border:1px solid #eee}
+    .row{display:flex;gap:12px;align-items:center}
+    #list{margin-top:16px}
+    .rsvp{padding:10px;border-bottom:1px solid #f0eef3}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Painel de organizadores</h1>
+
+    <div id="auth">
+      <h3>Login</h3>
+      <input id="email" placeholder="email" />
+      <input id="pass" type="password" placeholder="senha" />
+      <button id="btnLogin">Entrar</button>
+      <button id="btnCreate" style="margin-left:8px">Criar usuário (apenas 1x)</button>
+      <div id="authMsg" style="margin-top:8px;color:#666"></div>
+    </div>
+
+    <div id="panel" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>Você está logado</strong></div>
+        <div><button id="logout">Sair</button></div>
+      </div>
+
+      <h3>RSVPs</h3>
+      <div id="list">Carregando...</div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script src="app.js"></script>
+</body>
 </html>
