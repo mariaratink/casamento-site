@@ -1,8 +1,623 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Convite</title></head>
-  <body>
-    <h1>Bem-vindos ao nosso casamento ❤️</h1>
-    <a href="/admin">Área dos organizadores</a>
-  </body>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maria Clara & Henrique — 14.08.2027</title>
+
+  <!-- fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+        /* RSVP dashboard / gallery helpers */
+    #guestTable tbody tr{ border-bottom:1px solid rgba(111,79,149,0.04); }
+    .guest-row { display:flex;gap:12px;align-items:center;padding:10px 0 }
+    .guest-name { font-weight:600; color:#2b2630; min-width:160px; }
+    .guest-meta { color:rgba(43,35,48,0.6); font-size:13px; }
+    .guest-actions { margin-left:auto; display:flex; gap:8px; }
+    #rsvpMessage { transition: all .18s ease; }
+
+    :root{
+      --lilac:#9b7fbf;
+      --lilac-dark:#6f4f95;
+      --bg:#fbf9fc;
+      --muted:#6b6170;
+      --card:#ffffff;
+      --radius:14px;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box}
+    html { scroll-behavior: smooth; }
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+      background-color:#fbf8f4;
+      background-image:
+        url('assets/paper-texture.jpg'),
+        linear-gradient(180deg,var(--bg),#fff);
+      background-repeat: repeat, no-repeat;
+      background-size: auto, cover;
+      color:#27232a;
+      padding:28px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .container{ width:100%; max-width:var(--max-width); }
+
+    /* === MENU (top) - glass style === */
+    .top-menu-clean{
+      max-width:var(--max-width);
+      margin: 0 auto 22px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:14px;
+      padding:10px 16px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(10px);
+    }
+    .top-menu-clean a{
+      text-decoration:none;
+      padding:8px 16px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:500;
+      color:var(--lilac-dark);
+      transition: all .25s ease;
+    }
+    .top-menu-clean a:hover{
+      background: rgba(155,127,191,0.25);
+      color: var(--lilac-dark);
+    }
+
+    @media(max-width:760px){
+      .top-menu-clean{ flex-wrap:wrap; gap:10px; font-size:14px; padding:8px; }
+    }
+
+    /* === HERO IMAGE === */
+    .hero-image{
+      position:relative;
+      width:100%;
+      height:62vh;
+      min-height:360px;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow: 0 18px 50px rgba(90,70,90,0.06);
+      background:var(--card);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+    }
+    .hero-image img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    /* === CAPTION (fora da imagem) === */
+    .hero-caption{
+      max-width:var(--max-width);
+      margin: 14px auto 28px;
+      padding:20px 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.995));
+      border-radius:14px;
+      box-shadow: 0 10px 36px rgba(90,70,90,0.04);
+      text-align:center;
+      transform: translateY(-18px);
+      position:relative;
+    }
+    .hero-caption h1{
+      margin:0 0 6px;
+      font-family:'Great Vibes', cursive;
+      font-size:clamp(34px,5.2vw,56px);
+      color:var(--lilac-dark);
+      font-weight:400;
+    }
+    .hero-caption .date{
+      margin:0 0 12px;
+      color:var(--lilac-dark);
+      font-weight:600;
+      font-size:15px;
+      letter-spacing:0.4px;
+    }
+
+    /* === COUNTDOWN BOXES === */
+    .flip-clock{ display:flex; gap:14px; justify-content:center; align-items:center; margin-top:10px; flex-wrap:wrap; }
+    .flip-clock .card{ width:92px; height:92px; background:var(--lilac-dark); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 16px 32px rgba(111,79,149,0.28); color:#fff; }
+    .flip-clock .num{ font-family: Inter, system-ui, Arial, sans-serif; font-weight:800; font-size:28px; line-height:1; }
+    .flip-clock .label{ margin-top:6px; font-size:11px; color:rgba(255,255,255,0.95); font-weight:600; text-transform:lowercase; }
+
+    @media(max-width:760px){
+      .hero-image{ height:48vh; min-height:220px; }
+      .flip-clock .card{ width:72px; height:72px; }
+      .flip-clock .num{ font-size:20px; }
+      .hero-caption h1{ font-size:clamp(26px,7vw,36px); }
+      .hero-caption{ padding:16px 18px; transform:translateY(-12px); }
+    }
+
+    /* rest of page */
+    main{ margin-top:14px; display:grid; gap:18px; }
+    .card{ background:var(--card); border-radius:var(--radius); padding:20px; box-shadow: 0 8px 30px rgba(90,70,90,0.03); }
+    .two-col{ display:grid; gap:18px; grid-template-columns: 1fr; }
+    @media(min-width:920px){ .two-col{ grid-template-columns: 1fr 420px; } }
+    .editable{ min-height:140px; border-radius:10px; padding:16px; border:1px dashed rgba(160,140,170,0.12); background:#fff; color:#2b2630; }
+    .muted-small{ color:rgba(43,35,48,0.6); font-size:13px; }
+
+    /* === História (texto + verso + galeria) === */
+    .story-wrap{ line-height: 1.75; font-size: 15.5px; color: rgba(39,35,42,0.92); }
+    .story-wrap p{ margin: 0 0 12px; }
+    .story-verse{ margin: 16px 0 18px; padding: 14px 16px; border-radius: 12px; background: rgba(155,127,191,0.10); border: 1px solid rgba(111,79,149,0.14); color: var(--lilac-dark); text-align: center; }
+    .story-verse em{ display:block; font-size: 16px; font-weight: 600; }
+    .story-verse span{ display:block; margin-top: 6px; font-size: 13px; opacity: 0.85; }
+
+    /* FORçar layout da seção "historia" para 1 coluna e galeria full-width */
+    #historia { display:block; padding-bottom: 4px; }
+
+    /* centraliza botões em mobile/desktop e deixa o upload inline */
+    #historia .controls { display:flex; gap:10px; align-items:center; margin-top:12px; }
+
+    /* nova galeria grande (dentro da seção história) */
+    #historia .story-gallery{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:14px;
+    }
+
+    /* fotos mais prominentes */
+    #historia .story-photo img{
+      height: 320px;
+      object-fit:cover;
+      width:100%;
+      display:block;
+    }
+
+    /* em telas pequenas, imagens mais altas para visual mais agradável */
+    @media(max-width:640px){
+      #historia .story-photo img{ height:200px; }
+      #historia .controls{ flex-direction:column; align-items:stretch; }
+    }
+
+    /* opcional: tirar duplicidade visual do card interno */
+    #historia .editable{ margin-bottom:0; padding-bottom:0; border:none; box-shadow:none; }
+
+    /* small helpers */
+    .btn{ padding:8px 12px; border-radius:8px; border:none; cursor:pointer; background:var(--lilac); color:#fff; font-weight:600; }
+    .btn.secondary{ background:transparent; color:var(--lilac); border:1px solid rgba(111,79,149,0.12); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- MENU -->
+    <nav class="top-menu-clean" aria-label="Menu">
+      <a href="#historia" class="highlight">Nossa História</a>
+      <a href="#rsvp">Confirmar Presença</a>
+      <a href="#local">Local</a>
+      <a href="#presentes">Presentes</a>
+      <a href="#gal-title">Galeria</a>
+    </nav>
+
+    <!-- HERO IMAGE -->
+    <section class="hero-image" aria-label="Capa do casal">
+      <img src="assets/hero.jpg" alt="Maria Clara & Henrique — foto do casal">
+    </section>
+
+    <!-- CAPTION -->
+    <div class="hero-caption" role="region" aria-label="Título e contagem regressiva">
+      <h1>Maria Clara &amp; Henrique</h1>
+      <p class="date">14/08/2027</p>
+
+      <div id="flipClock" class="flip-clock" aria-live="polite">
+        <div class="card"><div class="num" id="fc-days">0</div><div class="label">dias</div></div>
+        <div class="card"><div class="num" id="fc-hours">00</div><div class="label">horas</div></div>
+        <div class="card"><div class="num" id="fc-mins">00</div><div class="label">min</div></div>
+        <div class="card"><div class="num" id="fc-secs">00</div><div class="label">seg</div></div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <main>
+      <!-- HISTÓRIA -->
+      <section class="card two-col" id="historia" aria-labelledby="history-title">
+        <div>
+          <h2 id="history-title">Nossa História</h2>
+
+          <!-- controles (Salvar / Reset) -->
+          <div class="controls">
+            <button id="saveStory" class="btn">Salvar História</button>
+            <button id="resetStory" class="btn secondary">Resetar</button>
+            <div style="flex:1"></div>
+            <div class="muted-small" style="align-self:center">Editável — salvo localmente no navegador.</div>
+          </div>
+
+          <!-- Texto editável -->
+          <div id="story" class="editable story-wrap" contenteditable="true" style="margin-top:14px">
+            <p>
+              Nossa história começou em <strong>2019</strong>, de um jeito simples, inesperado e cheio de significado.
+              A gente se conheceu na escola, em um jogo de futebol e, sem imaginar, ali Deus estava escrevendo
+              um capítulo que mudaria tudo.
+            </p>
+
+            <p>
+              Eu falei com o Henrique porque conhecia o irmão dele. Só que tinha uma coisa que não saía da minha cabeça:
+              ele tinha me dito que o Henrique tinha <strong>20 anos</strong>… e eu não acreditei nem um pouco 😅
+              Eu pensava: “Como assim 20 anos e ainda estudando aqui?”.
+              Foi aí que nasceu a minha curiosidade e eu fui tirar a prova do jeito mais direto possível:
+              <strong>pedi o RG dele</strong>.
+            </p>
+
+            <p>
+              Depois disso, o Henrique me seguiu no Instagram e a gente começou a conversar. No início era leve, espontâneo…
+              mas com o tempo foi ficando diferente. A conversa virava sorriso fácil, a presença fazia falta, e a gente
+              percebia que existia algo especial ali algo que não era só “coincidência”.
+            </p>
+
+            <p>
+              E antes de colocar nome em qualquer sentimento, nós escolhemos fazer o que mais protege o coração:
+              <strong>orar</strong>. Foram <strong>6 meses de oração</strong>.
+              Seis meses colocando nossos caminhos diante de Deus, pedindo direção, pedindo paz, pedindo confirmação.
+              Não foi pressa — foi propósito. Não foi impulso — foi cuidado.
+            </p>
+
+            <p class="story-verse">
+              <em>“Até aqui nos ajudou o Senhor.”</em>
+              <span>— 1 Samuel 7:12</span>
+            </p>
+
+            <p>
+              E Deus foi bondoso com a gente nesse tempo. Ele foi sustentando, alinhando, curando, amadurecendo.
+              A gente aprendeu a esperar, a confiar, a respeitar o tempo certo. E quando chegou o dia,
+              tudo fez sentido como se o céu dissesse: “Agora.”
+            </p>
+
+            <p>
+              No dia <strong>13 de agosto de 2019</strong>, começamos oficialmente nosso namoro.
+              E desde então, já se passaram <strong>5 anos</strong> de amor, amizade, parceria e fé.
+              Anos de conquistas, de lutas vencidas, de dias inesquecíveis… e também de dias difíceis.
+              Mas em todos eles, uma verdade permaneceu:
+              <strong>até aqui o Senhor nos sustentou</strong>.
+            </p>
+
+            <p>
+              Hoje, quando olhamos para trás, dá vontade de agradecer em voz alta por cada detalhe.
+              Pelo encontro, pela conversa, pela oração, pelo cuidado, pela paciência.
+              Porque a nossa história não é só sobre como nos conhecemos é sobre como Deus nos conduziu.
+            </p>
+
+            <p>
+              E agora, com o coração cheio de gratidão, a gente dá mais um passo.
+              O mesmo Deus que começou essa história com a gente, vai continuar sendo o centro dela.
+              E é com essa certeza que estamos prontos para viver o nosso <strong>para sempre</strong>. 🤍
+            </p>
+          </div>
+
+          <!-- upload e instruções (agora dentro da mesma coluna) -->
+          <div style="margin-top:18px">
+            <label class="muted-small" style="display:block;margin-bottom:8px">Adicionar fotos da história (aceita múltiplos)</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input id="fileInput" type="file" accept="image/*" multiple style="flex:1">
+              <button id="clearGallery" class="btn secondary">Limpar</button>
+            </div>
+            <p class="muted-small" style="margin-top:10px">Dica: hero: 1920×1080. Fotos internas: 1200×800. Miniaturas: 800×600.</p>
+          </div>
+
+          <!-- GALERIA (full-width abaixo do texto) -->
+          <div class="story-gallery" aria-label="Fotos da nossa história">
+            <figure class="story-photo">
+              <img src="assets/foto2.jpg" alt="2019 onde tudo começou">
+              <figcaption>2019 onde tudo começou</figcaption>
+            </figure>
+
+            <figure class="story-photo">
+              <img src="assets/foto3.jpg" alt="Da conversa ao carinho que cresceu">
+              <figcaption>Da conversa ao carinho que cresceu</figcaption>
+            </figure>
+
+            <figure class="story-photo">
+              <img src="assets/foto5.jpg" alt="13/08/2019 nosso sim">
+              <figcaption>13/08/2019 nosso sim</figcaption>
+            </figure>
+
+            <figure class="story-photo">
+              <img src="assets/foto6.jpg" alt="Hoje 5 anos depois, rumo ao para sempre">
+              <figcaption>Hoje 5 anos depois, rumo ao para sempre</figcaption>
+            </figure>
+          </div>
+
+          <p class="muted-small" style="margin-top:12px">
+            Dica: coloque as fotos na pasta <code>/assets</code> com os nomes <code>story-01.jpg</code>, <code>story-02.jpg</code>, <code>story-03.jpg</code>.
+          </p>
+        </div>
+      </section>
+
+      
+
+      <!-- LOCAL -->
+      <section id="rsvp" class="card" aria-labelledby="rsvp-title">
+  <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:320px;max-width:720px">
+      <h2 id="rsvp-title">Confirmar Presença (RSVP)</h2>
+      <p class="muted-small">Digite seu nome completo. Se estiver na lista autorizada, você poderá confirmar.</p>
+
+      <form id="rsvpForm" autocomplete="off" style="margin-top:8px">
+        <label class="muted-small">Nome completo</label>
+        <input id="rsvpName" type="text" placeholder="Seu nome completo" required style="width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid rgba(111,79,149,0.12)">
+
+        <label class="muted-small" style="margin-top:10px;display:block">Você irá ao evento?</label>
+        <select id="rsvpPresence" style="width:150px;padding:8px;margin-top:6px;border-radius:8px;border:1px solid rgba(111,79,149,0.12)">
+          <option value="">Escolha</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
+
+        <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+          <div>
+            <label class="muted-small">Adultos (incluindo você)</label>
+            <select id="rsvpAdults" style="padding:8px;border-radius:8px;border:1px solid rgba(111,79,149,0.12)">
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted-small">Crianças</label>
+            <select id="rsvpKids" style="padding:8px;border-radius:8px;border:1px solid rgba(111,79,149,0.12)">
+              <option>0</option><option>1</option><option>2</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="muted-small" style="margin-top:10px;display:block">E-mail (opcional)</label>
+        <input id="rsvpEmail" type="email" placeholder="exemplo@email.com" style="width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid rgba(111,79,149,0.12)">
+
+        <label class="muted-small" style="margin-top:10px;display:block">Observações (opcional)</label>
+        <textarea id="rsvpNotes" rows="3" placeholder="restrições alimentares, observações..." style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(111,79,149,0.12);margin-top:6px"></textarea>
+
+        <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+          <button type="submit" class="btn">Enviar</button>
+          <button type="button" id="downloadRsvp" class="btn secondary">Baixar (JSON)</button>
+          <div style="flex:1"></div>
+          <div id="rsvpMessage" class="muted-small" style="display:none;padding:10px;border-radius:8px;background:rgba(155,127,191,0.06)"></div>
+        </div>
+      </form>
+    </div>
+
+    <!-- painel / dashboard -->
+    <aside style="width:420px;min-width:300px">
+      <div style="background:#fff;border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(90,70,90,0.04)">
+        <h3 style="margin:0 0 12px">Painel de convidados</h3>
+        <div id="rsvpCounters" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;color:var(--lilac-dark)" id="count-confirmed">0</div>
+            <div class="muted-small">Confirmados</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;color:#b36b6b" id="count-cancelled">0</div>
+            <div class="muted-small">Não irão</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;color:#666" id="count-pending">0</div>
+            <div class="muted-small">Aguardando</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <input id="searchGuest" placeholder="Buscar por nome" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(111,79,149,0.08)">
+          <button id="exportCsv" class="btn secondary" title="Exportar CSV">Exportar CSV</button>
+        </div>
+
+        <div style="margin-top:12px;max-height:300px;overflow:auto">
+          <table id="guestTable" style="width:100%;border-collapse:collapse">
+            <thead style="display:none"></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+      <!-- PRESENTES e GALERIA GERAL mantidos -->
+      <section id="presentes" class="card" aria-labelledby="presentes-title">
+        <h2 id="presentes-title">Lista de Presentes</h2>
+        <p class="muted-small">Quer link para loja, contribuição ou lista? Posso gerar o card com botão para cada opção.</p>
+      </section>
+
+      <section class="card" aria-labelledby="gal-title">
+        <h2 id="gal-title">Galeria</h2>
+        <div id="gallery" class="gallery" aria-live="polite" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px"></div>
+        <div style="margin-top:12px" class="muted-small">As imagens adicionadas aqui são apenas para visualização local. Para publicar, suba na pasta <code>/assets</code> ou use um host de imagens.</div>
+      </section>
+
+      <footer style="text-align:center" class="muted-small">Desenvolvido com ❤️ — Maah & equipe</footer>
+    </main>
+  </div>
+
+  <script>
+// === LISTA FECHADA: substitua pelos nomes reais ===
+const convidadosAutorizados = [
+  "Maria Clara Costa",
+  "Henrique Almeida",
+  "Patrícia Souza",
+  "Anderson Lima",
+  "Valéria Rocha"
+  // ...adicione todos os convidados (exatos) aqui
+];
+
+// Normaliza nome (remove acento/maiusculas)
+function normalizarNome(nome) {
+  return (nome||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+// Helpers storage
+const STORAGE_KEY = 'wedding_rsvps_v1';
+function loadRsvps(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch(e){return[];} }
+function saveRsvps(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+// UI elements
+const form = document.getElementById('rsvpForm');
+const msgEl = document.getElementById('rsvpMessage');
+const downloadBtn = document.getElementById('downloadRsvp');
+const tableBody = document.querySelector('#guestTable tbody');
+const confirmedEl = document.getElementById('count-confirmed');
+const cancelledEl = document.getElementById('count-cancelled');
+const pendingEl = document.getElementById('count-pending');
+const searchInput = document.getElementById('searchGuest');
+const exportCsvBtn = document.getElementById('exportCsv');
+
+function renderList(filterText=''){
+  const list = loadRsvps();
+  // counters
+  const confirmed = list.filter(r=>r.presence==='Sim').length;
+  const cancelled = list.filter(r=>r.presence==='Não').length;
+  const pending = list.filter(r=>!r.presence || r.presence==='' ).length;
+  confirmedEl.textContent = confirmed;
+  cancelledEl.textContent = cancelled;
+  pendingEl.textContent = pending;
+
+  // render rows
+  tableBody.innerHTML = '';
+  const normalizedFilter = normalizarNome(filterText);
+  list.forEach((r, idx)=>{
+    if(normalizedFilter && !normalizarNome(r.name).includes(normalizedFilter)) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="padding:8px 0">
+        <div class="guest-row">
+          <div style="width:56px;height:56px;border-radius:8px;background:rgba(111,79,149,0.06);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lilac-dark)">${r.name.charAt(0).toUpperCase()}</div>
+          <div>
+            <div class="guest-name">${r.name}</div>
+            <div class="guest-meta">${r.presence || 'Aguardando'} · ${r.adults||1} adultos · ${r.kids||0} crianças · ${r.email||''}</div>
+            <div class="guest-meta" style="margin-top:6px">${r.notes? r.notes : ''}</div>
+          </div>
+          <div class="guest-actions">
+            <button data-action="remove" data-idx="${idx}" class="btn secondary" style="padding:6px 8px">Remover</button>
+            <button data-action="edit" data-idx="${idx}" class="btn" style="padding:6px 8px;background:var(--lilac-dark);">Editar</button>
+          </div>
+        </div>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+// check autorizacao
+function isAutorizado(nome){
+  const norm = normalizarNome(nome);
+  return convidadosAutorizados.some(n => normalizarNome(n) === norm);
+}
+
+// form submit
+form && form.addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('rsvpName').value.trim();
+  if(!name) return;
+  const normalized = normalizarNome(name);
+  const autorizado = isAutorizado(name);
+
+  if(!autorizado){
+    msgEl.style.display='block';
+    msgEl.style.background='rgba(255,230,230,0.9)';
+    msgEl.style.color='#8b2d2d';
+    msgEl.textContent = 'Que alegria receber você — mas este convite é restrito. Se acha que houve engano, fale com os noivos.';
+    return;
+  }
+
+  // montar entry
+  const entry = {
+    name,
+    presence: document.getElementById('rsvpPresence').value,
+    adults: document.getElementById('rsvpAdults').value,
+    kids: document.getElementById('rsvpKids').value,
+    email: document.getElementById('rsvpEmail').value.trim(),
+    notes: document.getElementById('rsvpNotes').value.trim(),
+    timestamp: new Date().toISOString()
+  };
+
+  // salvar (se já existe, atualiza)
+  const list = loadRsvps();
+  const idx = list.findIndex(x => normalizarNome(x.name) === normalized);
+  if(idx >= 0){
+    list[idx] = {...list[idx], ...entry};
+  } else {
+    list.push(entry);
+  }
+  saveRsvps(list);
+
+  msgEl.style.display='block';
+  msgEl.style.background='rgba(155,127,191,0.10)';
+  msgEl.style.color='#4a2f63';
+  msgEl.textContent = 'Presença registrada — obrigado!';
+
+  form.reset();
+  renderList(searchInput.value || '');
+});
+
+// download single (last entry) JSON
+downloadBtn && downloadBtn.addEventListener('click', ()=>{
+  const list = loadRsvps();
+  if(!list.length) return alert('Sem registros para baixar');
+  const blob = new Blob([JSON.stringify(list, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'rsvps.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// delegate remove/edit from table
+tableBody && tableBody.addEventListener('click', (ev)=>{
+  const btn = ev.target.closest('button');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  const idx = Number(btn.dataset.idx);
+  const list = loadRsvps();
+  if(action === 'remove'){
+    if(!confirm('Remover este registro?')) return;
+    list.splice(idx,1);
+    saveRsvps(list);
+    renderList(searchInput.value || '');
+  } else if(action === 'edit'){
+    const entry = list[idx];
+    document.getElementById('rsvpName').value = entry.name;
+    document.getElementById('rsvpPresence').value = entry.presence || '';
+    document.getElementById('rsvpAdults').value = entry.adults || '1';
+    document.getElementById('rsvpKids').value = entry.kids || '0';
+    document.getElementById('rsvpEmail').value = entry.email || '';
+    document.getElementById('rsvpNotes').value = entry.notes || '';
+    window.scrollTo({top: document.getElementById('rsvpForm').offsetTop - 40, behavior:'smooth'});
+  }
+});
+
+// search filter
+searchInput && searchInput.addEventListener('input', ()=> renderList(searchInput.value));
+
+// export CSV
+exportCsvBtn && exportCsvBtn.addEventListener('click', ()=>{
+  const rows = loadRsvps();
+  if(!rows.length) return alert('Sem registros');
+  const cols = ['name','presence','adults','kids','email','notes','timestamp'];
+  const csv = [cols.join(',')].concat(rows.map(r => cols.map(c => `"${(r[c]||'').toString().replace(/"/g,'""')}"`).join(','))).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'rsvps.csv'; a.click(); URL.revokeObjectURL(url);
+});
+
+// init
+renderList();
+</script>
+
+    
+  
+
+</body>
 </html>
